@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:sec="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+
+    <sec:http disable-url-rewriting="true" entry-point-ref="forbiddenEntryPoint" use-expressions="true">
+        <sec:anonymous/>
+        <sec:custom-filter ref="restAuthenticationFilter" position="FORM_LOGIN_FILTER"/>
+        <sec:intercept-url pattern="/**" access="isFullyAuthenticated()"/>
+    </sec:http>
+
+    <bean id="forbiddenEntryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
+
+    <sec:authentication-manager alias="defaultAuthenticationManager">
+        <sec:authentication-provider ref="daoAuthenticationProvider"/>
+    </sec:authentication-manager>
+
+    <bean id="daoAuthenticationProvider" class="com.kevinpotgieter.web.security.RESTDaoAuthenticationProvider">
+        <property name="userSecurityService" ref="userSecurityServiceImpl"/>
+        <property name="passwordEncoder" ref="passwordEncoder"/>
+    </bean>
+
+    <bean id="passwordEncoder" class="com.kevinpotgieter.web.security.authentication.algorithms.HMacShaPasswordEncoder">
+        <constructor-arg name="strength" value="256"/>
+        <constructor-arg name="encodeHashAsBase64" value="true"/>
+    </bean>
+
+    <bean id="restAuthenticationFilter" class="com.kevinpotgieter.web.security.http.RESTAuthenticationFilter">
+        <constructor-arg name="defaultFilterProcessesUrl" value="/"/>
+        <property name="authenticationManager" ref="defaultAuthenticationManager"/>
+        <property name="authenticationSuccessHandler">
+            <!-- Upon successful authentication, Spring will attempt to try and move you to another URL -->
+            <!-- We have to prevent this because the request for the resource and the authentication all get done in the same request! -->
+            <bean class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+                <property name="redirectStrategy">
+                    <bean class="com.kevinpotgieter.web.security.http.NoRedirectStrategy"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+
+
+
+</beans>
