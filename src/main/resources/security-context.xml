@@ -8,15 +8,16 @@
        http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
 
-    <sec:http disable-url-rewriting="true" entry-point-ref="forbiddenEntryPoint" use-expressions="true">
-        <sec:anonymous/>
+    <sec:http disable-url-rewriting="true" entry-point-ref="forbiddenEntryPoint" use-expressions="true" create-session="never">
+        <sec:anonymous enabled="false"/>
+        <sec:session-management session-fixation-protection="none"/>
         <sec:custom-filter ref="restAuthenticationFilter" position="FORM_LOGIN_FILTER"/>
         <sec:intercept-url pattern="/**" access="isFullyAuthenticated()"/>
     </sec:http>
 
     <bean id="forbiddenEntryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
 
-    <sec:authentication-manager alias="defaultAuthenticationManager">
+    <sec:authentication-manager alias="defaultAuthenticationManager" erase-credentials="true">
         <sec:authentication-provider ref="daoAuthenticationProvider"/>
     </sec:authentication-manager>
 

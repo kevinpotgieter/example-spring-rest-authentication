@@ -2,6 +2,7 @@ package com.kevinpotgieter.web.security.authentication.algorithms;
 
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.crypto.codec.Base64;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -91,6 +92,10 @@ public class HMacShaPasswordEncoder implements PasswordEncoder {
 
     @Override
     public boolean isPasswordValid(String encPass, String rawPass, Object salt) {
+        if(!StringUtils.hasText(encPass) || !StringUtils.hasText(rawPass))
+        {
+            return false;
+        }
         String pass1 = "" + encPass;
         String pass2 = encodePassword(rawPass, salt);
 
