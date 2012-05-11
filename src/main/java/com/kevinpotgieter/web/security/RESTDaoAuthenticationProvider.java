@@ -36,9 +36,7 @@ public class RESTDaoAuthenticationProvider extends AbstractUserDetailsAuthentica
      * @throws AuthenticationException
      */
     @Override
-    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
-        // here we check if the details provided by the user actually stack up.
-
+    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {        // here we check if the details provided by the user actually stack up.
         //Get Credentials out of the Token...
         RESTAuthenticationToken token = (RESTAuthenticationToken)authentication;
         if(token != null){

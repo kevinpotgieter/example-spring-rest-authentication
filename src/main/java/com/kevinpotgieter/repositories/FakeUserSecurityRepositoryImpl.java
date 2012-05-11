@@ -17,14 +17,14 @@ import java.util.ArrayList;
 @Repository
 public class FakeUserSecurityRepositoryImpl implements UserSecurityRepository {
 
-    private RESTUser exampleUser;
-
-    private FakeUserSecurityRepositoryImpl(){
-        exampleUser = new RESTUser("username", "password", "api-1234", new ArrayList<GrantedAuthority>());
+    private RESTUser simulateFetchOfuser() {
+        return new RESTUser("username", "password", "api-1234", new ArrayList<GrantedAuthority>());
     }
 
     @Override
     public UserDetails getUserByUsername(String username) {
+        RESTUser exampleUser = simulateFetchOfuser();
+
         if(username.equalsIgnoreCase(exampleUser.getUsername())){
             return exampleUser;
         }
@@ -33,6 +33,7 @@ public class FakeUserSecurityRepositoryImpl implements UserSecurityRepository {
 
     @Override
     public UserDetails getUserByApiKey(String apiKey) {
+        RESTUser exampleUser = simulateFetchOfuser();
         if(apiKey.equals(exampleUser.getApiKey())){
             return exampleUser;
         }
